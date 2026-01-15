@@ -7,15 +7,19 @@ import routerProvider, {
   DocumentTitleHandler,
   UnsavedChangesNotifier,
 } from "@refinedev/react-router";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
+
 import { Toaster } from "./components/refine-ui/notification/toaster";
 import { useNotificationProvider } from "./components/refine-ui/notification/use-notification-provider";
 import { ThemeProvider } from "./components/refine-ui/theme/theme-provider";
 import { dataProvider } from "./providers/data";
 
 import Dashboard from "./pages/dashboard";
-import { Home } from "lucide-react";
+import Layout from "./pages/layout"; // ✅ Layout with sidebar
+import { Home, BookOpen } from "lucide-react";
+import SubjectsList from "./subjects/list";
+import SubjectsCreate from "./pages/create";
 
 function App() {
   return (
@@ -34,15 +38,30 @@ function App() {
               }}
               resources={[
                 {
-                  name: 'dashboard',
-                  list: '/',
-                  meta: {label: 'Home', icon: <Home /> }
-                }
+                  name: "dashboard",
+                  list: "/",
+                  meta: { label: "Home", icon: <Home /> },
+                },
+                {
+                  name: "subjects",
+                  list: "/subjects",
+                  create: '/subjects/create',
+                  meta: { label: "Subjects", icon: <BookOpen /> },
+                },
               ]}
             >
               <Routes>
-                <Route path="/" element={<Dashboard />} />
+                <Route element={<Layout />}>
+                  <Route path="/" element={<Dashboard />} />
+
+                  <Route path="subjects">
+                    <Route index element={<SubjectsList />} />
+                    <Route path="create" element = {<SubjectsCreate />} />
+                  </Route>
+
+                </Route>
               </Routes>
+
               <Toaster />
               <RefineKbar />
               <UnsavedChangesNotifier />
